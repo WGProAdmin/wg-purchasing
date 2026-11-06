@@ -33,18 +33,18 @@ function Team() {
   return (
     <section className="card">
       <h2>Team access</h2>
-      <p>Hub admins are purchasing admins automatically. Regional directors can view and request for every market; only admins approve and log orders.</p>
+      <p>Access here is separate from the property database roles. Admins approve requests and log orders; regional directors can view and request for every market.</p>
       <table className="simple">
         <thead><tr><th>Name</th><th>Role</th><th></th></tr></thead>
         <tbody>{members.map(p => (
           <tr key={p.user_id}><td>{p.name}<div className="muted" style={{ fontSize: 12.5 }}>{p.email}</div></td>
-            <td>{p.purchasing_role === 'admin' ? (p.hub_role === 'admin' ? 'Admin (hub)' : 'Admin') : 'Regional director'}</td>
-            <td>{p.hub_role === 'admin' ? null : <button className="btn ghost sm" type="button" onClick={() => edit(p)}>Edit</button>}</td></tr>))}</tbody>
+            <td>{p.purchasing_role === 'admin' ? 'Admin' : 'Regional director'}</td>
+            <td><button className="btn ghost sm" type="button" onClick={() => edit(p)}>Change</button></td></tr>))}</tbody>
       </table>
       <div className="sec-h">Add or update someone</div>
       {err ? <p className="err" role="alert">{err}</p> : null}
       <div className="grid2">
-        <div className="field"><label htmlFor="tm">Work email</label><input id="tm" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /></div>
+        <div className="field"><label htmlFor="tm">Work email</label><input id="tm" type="email" list="hubpeople" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /><datalist id="hubpeople">{people.filter(p => !p.purchasing_role && p.email).map(p => <option key={p.user_id} value={p.email}>{p.name}</option>)}</datalist></div>
         <div className="field"><label htmlFor="tr">Role</label><select id="tr" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}><option value="regional_director">Regional director</option><option value="admin">Admin</option></select></div>
       </div>
       <div style={{ display: 'flex', gap: 10 }}>

@@ -78,7 +78,8 @@ const ERRORS = {
   note_required: 'Add a reason so the requester knows what to change.',
   invalid_transition: 'That status change isn’t allowed.',
   no_account: 'No login exists for that email yet. Invite them in Supabase Auth first, then add them here.',
-  zone_required: 'Choose a market.'
+  zone_required: 'Choose a market.',
+  last_admin: 'There has to be at least one admin. Make someone else an admin first.'
 };
 export function errMsg(e) {
   const m = e?.message || '';
