@@ -8,7 +8,7 @@ React + Supabase (wg-property-database hub) + Netlify. Reads properties, beds, a
 3. Supabase → Authentication → URL Configuration: add the Netlify URL to Redirect URLs so “Email me a sign-in link” works.
 
 ## Access
-- Hub admins (user_roles.role = admin) are purchasing admins automatically. Holly is seeded as a purchasing admin. Regional directors can view and request for every market.
+- Access is set only in Settings → Team access (purchasing_members), independent of hub roles. Regional directors can view and request for every market.
 - Regional directors need a Supabase Auth login (invite from the Supabase dashboard), then an admin adds them in Settings → Team access.
 
 ## Data model (hub)
