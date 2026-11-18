@@ -1,14 +1,15 @@
 export const MULTIPLIERS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 export const TYPES = { onboard: 'New onboard', unusable: 'Unusable linens', restock: 'Restock', other: 'Other' };
 export const STATUS = {
-  pending: 'Awaiting approval', approved: 'Approved', partial: 'Partially ordered', ordered: 'Ordered',
+  pending: 'Awaiting approval', approved: 'Approved', partial: 'Partially processed', ordered: 'Order processed',
   received: 'Received', closed: 'Closed', denied: 'Denied', cancelled: 'Cancelled'
 };
 export const FILTERS = [
+  { k: 'queue', label: 'Priority queue', match: s => ['pending', 'approved', 'partial'].includes(s) },
   { k: 'open', label: 'Open', match: s => ['pending', 'approved', 'partial', 'ordered'].includes(s) },
   { k: 'pending', label: 'Awaiting approval', match: s => s === 'pending' },
   { k: 'approved', label: 'Approved', match: s => s === 'approved' },
-  { k: 'onorder', label: 'On order', match: s => s === 'partial' || s === 'ordered' },
+  { k: 'onorder', label: 'Order processed', match: s => s === 'partial' || s === 'ordered' },
   { k: 'done', label: 'Completed', match: s => s === 'received' || s === 'closed' },
   { k: 'all', label: 'All', match: () => true }
 ];
@@ -79,6 +80,7 @@ const ERRORS = {
   invalid_transition: 'That status change isn’t allowed.',
   no_account: 'No login exists for that email yet. Invite them in Supabase Auth first, then add them here.',
   zone_required: 'Choose a market.',
+  invalid_priority: 'The queue changed while you were moving it. Try again.',
   last_admin: 'There has to be at least one admin. Make someone else an admin first.'
 };
 export function errMsg(e) {

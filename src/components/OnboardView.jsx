@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
 import { useApp } from '../App.jsx';
@@ -6,7 +6,7 @@ import ItemGrid from './ItemGrid.jsx';
 import { MULTIPLIERS, cost, fmtDate, money, scale, sum, errMsg } from '../lib/util.js';
 
 export default function OnboardView({ onCount }) {
-  const { zoneId, zoneName, isAdmin, catalog, setDrawer, requests, toast, me } = useApp();
+  const { zoneId, zoneName, isAdmin, catalog, setDrawer, requests, toast } = useApp();
   const [rows, setRows] = useState(null);
   const [err, setErr] = useState('');
   const [showDismissed, setShowDismissed] = useState(false);
@@ -28,7 +28,7 @@ export default function OnboardView({ onCount }) {
   const itemsFor = r => over[r.property_id] || scale(r.par, mult[r.property_id] ?? 1);
   const chosen = (rows || []).filter(r => sel[r.property_id]);
   const markets = [...new Set(chosen.map(r => r.zone_id))];
-  const totals = useMemo(() => { const t = {}; for (const r of chosen) for (const [k, v] of Object.entries(itemsFor(r))) t[k] = (t[k] || 0) + v; return t; }, [chosen, over, mult]);
+  const totals = {}; for (const r of chosen) for (const [k, v] of Object.entries(itemsFor(r))) totals[k] = (totals[k] || 0) + v;
   const c = cost(totals, catalog.byKey);
 
   const payload = () => ({

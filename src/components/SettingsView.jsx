@@ -7,33 +7,33 @@ import { BASES, errMsg } from '../lib/util.js';
 export default function SettingsView() {
   return (
     <>
-      <div className="head"><div><h1>Settings</h1><p>Who can use the tool, which markets they see, and how par orders are calculated.</p></div></div>
+      <div className="head"><div><h1>Settings</h1><p>Who can use the tool and how par orders are calculated.</p></div></div>
       <div className="settings"><Team /><Par /><Queue /></div>
     </>
   );
 }
 
 function Team() {
-  const { zones, loadNames, toast } = useApp();
+  const { loadNames, toast } = useApp();
   const [people, setPeople] = useState([]);
-  const [form, setForm] = useState({ email: '', role: 'regional_director', zone_ids: [] });
+  const [form, setForm] = useState({ email: '', role: 'regional_director' });
   const [err, setErr] = useState(''); const [busy, setBusy] = useState(false);
   const load = useCallback(async () => setPeople(await loadNames()), [loadNames]);
   useEffect(() => { load(); }, [load]);
-  const edit = p => setForm({ email: p.email, role: p.purchasing_role || 'regional_director', zone_ids: p.zone_ids || [] });
+  const edit = p => setForm({ email: p.email, role: p.purchasing_role || 'regional_director' });
   const save = async remove => {
     setErr(''); if (!form.email.trim()) return setErr('Enter an email.');
     setBusy(true);
     const { error } = await supabase.rpc('purchasing_set_member', { p_email: form.email, p_role: remove ? null : form.role, p_zone_ids: [] });
     setBusy(false);
     if (error) return setErr(errMsg(error));
-    toast(remove ? 'Access removed.' : 'Access saved.'); setForm({ email: '', role: 'regional_director', zone_ids: [] }); load();
+    toast(remove ? 'Access removed.' : 'Access saved.'); setForm({ email: '', role: 'regional_director' }); load();
   };
   const members = people.filter(p => p.purchasing_role).sort((a, b) => (a.purchasing_role + a.name).localeCompare(b.purchasing_role + b.name));
   return (
     <section className="card">
       <h2>Team access</h2>
-      <p>Access here is separate from the property database roles. Admins approve requests and log orders; regional directors can view and request for every market.</p>
+      <p>Access here is separate from the property database roles. Admins approve requests, set priority, and log orders; regional directors can view and request for every market.</p>
       <table className="simple">
         <thead><tr><th>Name</th><th>Role</th><th></th></tr></thead>
         <tbody>{members.map(p => (
@@ -44,7 +44,8 @@ function Team() {
       <div className="sec-h">Add or update someone</div>
       {err ? <p className="err" role="alert">{err}</p> : null}
       <div className="grid2">
-        <div className="field"><label htmlFor="tm">Work email</label><input id="tm" type="email" list="hubpeople" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /><datalist id="hubpeople">{people.filter(p => !p.purchasing_role && p.email).map(p => <option key={p.user_id} value={p.email}>{p.name}</option>)}</datalist></div>
+        <div className="field"><label htmlFor="tm">Work email</label><input id="tm" type="email" list="hubpeople" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+          <datalist id="hubpeople">{people.filter(p => !p.purchasing_role && p.email).map(p => <option key={p.user_id} value={p.email}>{p.name}</option>)}</datalist></div>
         <div className="field"><label htmlFor="tr">Role</label><select id="tr" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}><option value="regional_director">Regional director</option><option value="admin">Admin</option></select></div>
       </div>
       <div style={{ display: 'flex', gap: 10 }}>
@@ -66,7 +67,7 @@ function Par() {
     if (error) return toast(errMsg(error)); loadCatalog();
   };
   const saveRule = async (rule, factor) => {
-    const n = Number(factor); if (!(n > 0)) return;
+    const n = Number(factor); if (!(n >= 0)) return;
     const { error } = await supabase.from('linen_par_rules').update({ factor: n }).eq('id', rule.id);
     if (error) toast(errMsg(error)); else load();
   };

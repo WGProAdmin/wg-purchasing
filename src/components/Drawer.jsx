@@ -74,7 +74,7 @@ function RequestDetail({ id }) {
   const { r, orders, loading } = useRequest(id);
   const [busy, setBusy] = useState(false);
   if (loading) return <Shell title="Loading…" />;
-  if (!r) return <Shell title="Request not found" sub="It may be outside your markets or no longer exist." />;
+  if (!r) return <Shell title="Request not found" sub="It may no longer exist." />;
   const d = derive(r, new Map([[r.id, orders]]));
   const mine = r.requested_by === session.user.id;
   const c = cost(d.requested, catalog.byKey);
@@ -90,7 +90,7 @@ function RequestDetail({ id }) {
   const ev = [{ at: r.created_at, t: `Submitted by ${nm(r.requested_by)}` }];
   for (const rp of r.linen_request_properties) if (new Date(rp.added_at) - new Date(r.created_at) > 60000) ev.push({ at: rp.added_at, t: `${rp.property_code} added by ${nm(rp.added_by)}` });
   if (r.decided_at) ev.push({ at: r.decided_at, t: `${r.status === 'denied' ? 'Denied' : r.status === 'closed' ? 'Closed' : 'Approved'} by ${nm(r.decided_by)}` });
-  for (const o of orders) { ev.push({ at: o.created_at, t: `Order logged by ${nm(o.ordered_by)}${o.vendor ? ' with ' + o.vendor : ''}` }); if (o.received_at) ev.push({ at: o.received_at, t: `Marked received by ${nm(o.received_by)}` }); }
+  for (const o of orders) { ev.push({ at: o.created_at, t: `Order processed by ${nm(o.ordered_by)}${o.vendor ? ' with ' + o.vendor : ''}` }); if (o.received_at) ev.push({ at: o.received_at, t: `Marked received by ${nm(o.received_by)}` }); }
   if (r.status === 'cancelled') ev.push({ at: r.updated_at, t: 'Cancelled' });
   ev.sort((a, b) => new Date(a.at) - new Date(b.at));
 
@@ -325,7 +325,6 @@ function OrderForm({ requestId }) {
 }
 
 function ObSummary({ data }) {
-  const { catalog } = useApp();
   return data.properties.map(p => (
     <div className="prop-block" key={p.property_id}><h4>{p.code} - {p.name}<span>{p.multiplier}x par | {sum(p.items)} pcs</span></h4><Chips items={p.items} /></div>));
 }

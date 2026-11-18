@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Bell } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 import { derive } from './lib/util.js';
 import SignIn from './components/SignIn.jsx';
@@ -93,6 +92,7 @@ function Main({ session }) {
 
   // Realtime: refresh lists on any change; toast new notifications
   const reloadRef = useRef(); reloadRef.current = () => { loadData(); loadQueueCount(); };
+  const toastRef = useRef(); toastRef.current = toast;
   useEffect(() => {
     if (!me?.role) return;
     let timer;
@@ -107,7 +107,6 @@ function Main({ session }) {
       .subscribe();
     return () => { clearTimeout(timer); supabase.removeChannel(ch); };
   }, [me?.role, session.user.id]);
-  const toastRef = useRef(); toastRef.current = toast;
 
   const posByReq = useMemo(() => {
     const m = new Map(); for (const o of pos) if (o.request_id) { if (!m.has(o.request_id)) m.set(o.request_id, []); m.get(o.request_id).push(o); } return m;

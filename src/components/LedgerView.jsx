@@ -4,7 +4,7 @@ import { TYPES, cost, fmtDate, money, sum } from '../lib/util.js';
 
 /* Mirrors the Updated - Linens tab: requests add, orders subtract, footer = still needed */
 export default function LedgerView() {
-  const { zoneId, zoneName, requests, pos, posByReq, derived, catalog, nm, setDrawer, loaded } = useApp();
+  const { zoneId, zoneName, requests, pos, derived, catalog, nm, setDrawer, loaded } = useApp();
   if (!zoneId) return (<><div className="head"><div><h1>Linen ledger</h1><p>Pick a market in the top bar to see its ledger.</p></div></div>
     <div className="list"><div className="empty"><h3>Choose a market</h3><p>The ledger nets every request against every order for one market, like the tracker sheet.</p></div></div></>);
   if (!loaded) return <div className="list"><div className="empty">Loading ledger…</div></div>;
